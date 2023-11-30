@@ -8,23 +8,31 @@ namespace App
 {
     public class Helper
     {
-        public String CombineUrl(String part1, String part2)
+        public String CombineUrl(params String[] parts)
         {
-            if (!part1.StartsWith('/')) part1 = '/' + part1;
-            if (part1.EndsWith("/")) part1 = part1[..^1];
-
-            if (!part2.StartsWith('/')) part2 = '/' + part2;
-            if (part2.EndsWith("/")) part2 = part2[..^1];
-            if (part1.EndsWith("/.."))
+            StringBuilder sb = new();
+            bool wasNull = false;
+            foreach (String part in parts)
             {
-                int lastSlashIndex = part1.LastIndexOf('/', part1.Length - 4);
-                if (lastSlashIndex >= 0)
+                if (part is null)
                 {
-                    part1 = part1.Substring(0, lastSlashIndex);
+                    wasNull = true;
+                    continue;
                 }
+                if (wasNull)
+                {
+                    throw new ArgumentException("Non-Null argument after Null one");
+                }
+                String p = part;
+                if (!p.StartsWith('/')) p = '/' + p;
+                if (p.EndsWith("/")) p = p[..^1];
+                sb.Append(p);
             }
-
-            return $"{part1}{part2}";
+            if (sb.Length == 0)
+            {
+                throw new ArgumentException("All arguments are null");
+            }
+            return sb.ToString();
         }
         public String Ellipsis(String input, int len)
         {
