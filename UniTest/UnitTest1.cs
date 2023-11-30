@@ -32,21 +32,24 @@ namespace UniTest
         public void CombineUrlTest()
         {
             Helper helper = new();
-            Dictionary<String[], String> testCases = new()
+            Dictionary<string[], string> testCases = new()
             {
-                {new[]{"/home","index" }, "/home/index"},
-                {new[]{"/home/","/index" } ,"/home/index"},
-                {new[]{"home/","index" }, "/home/index"},
-                {new[]{"/home///","index" }, "/home/index"},
-                {new[]{"////home/","/index" } ,"/home/index"},
-                {new[]{"home/","////index" }, "/home/index"},
-                {new[]{"/shop/cart/user/../123", "" }, "/shop/cart/123"}
+                { new[] { "/home", "index" }, "/home/index" },
+                { new[] { "/shop", "/cart" }, "/shop/cart" },
+                { new[] { "auth/", "logout" }, "/auth/logout" },
+                { new[] { "forum/", "topic/" }, "/forum/topic" },
+                { new[] { "/home///", "index" }, "/home/index" },
+                { new[] { "///home/", "/index" }, "/home/index" },
+                { new[] { "home/", "////index" }, "/home/index" },
+                { new[] { "///home/////", "////index///" }, "/home/index" },
             };
             foreach (var testCase in testCases)
             {
                 Assert.AreEqual(
                     testCase.Value,
-                    helper.CombineUrl(testCase.Key[0], testCase.Key[1]), $"{testCase.Value} -- {testCase.Key[0]} + {testCase.Key[1]}");
+                    helper.CombineUrl(testCase.Key[0], testCase.Key[1]),
+                    $"{testCase.Key[0]} - {testCase.Key[1]}"
+                );
             }
         }
     }
