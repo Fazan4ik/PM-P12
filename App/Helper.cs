@@ -10,35 +10,51 @@ namespace App
     {
         public String CombineUrl(params String[] parts)
         {
-            StringBuilder sb = new();
-            bool wasNull = false;
-            foreach (String part in parts)
+            if (parts is null) { throw new NullReferenceException("Parts is null"); }
+            if (parts.Length == 0) { throw new ArgumentException("Parts is empty"); }
+
+            StringBuilder result = new();  
+            string temp;
+            bool wasNull = false;  
+            for (int i = 0; i < parts.Length; i++)
             {
-                if (part is null)
+                if (parts[i] is null)
                 {
-                    wasNull = true;
+                    wasNull = true; 
                     continue;
                 }
                 if (wasNull)
                 {
                     throw new ArgumentException("Non-Null argument after Null one");
                 }
-                String p = part;
-                if (!p.StartsWith('/')) p = '/' + p;
-                if (p.EndsWith("/")) p = p[..^1];
-                sb.Append(p);
+
+                if (parts[i] == "..") { continue; } 
+                temp = "/" + parts[i].TrimStart('/').TrimEnd('/');  
+
+                if ((i != parts.Length - 1) && parts[i + 1] == "..") { continue; } 
+                result.Append(temp);
             }
-            if (sb.Length == 0)
+            if (result.Length == 0)
             {
                 throw new ArgumentException("All arguments are null");
             }
-            return sb.ToString();
+            return result.ToString();
         }
         public String Ellipsis(String input, int len)
         {
-            //return (len == 5) ? "He..." : "Hel...";
-            //return $"{"Hel"[..(len-3)]}...";
-            return $"{input[..(len - 3)]}...";
+            if (input is null)
+            {
+                throw new ArgumentNullException(nameof(input));  
+            }
+            if (len < 3)
+            {
+                throw new ArgumentException("Argument 'len' could not be less then 3");
+            }
+            if (len > input.Length)
+            {
+                throw new ArgumentOutOfRangeException("Argument 'len' could not be greater than input length");
+            }
+            return input[..(len - 3)] + "...";
         }
         public String Finalize(String input)
         {
