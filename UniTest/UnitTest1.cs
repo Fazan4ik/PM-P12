@@ -12,6 +12,48 @@ namespace UniTest
     public class HelperTest
     {
         [TestMethod]
+        public void TestEscapeHtml()
+        {
+            Helper helper = new();
+            Assert.IsNotNull(helper, "new Helper() should not be null");
+            Assert.AreEqual(
+                "&lt;div class=\"container\"&gt;&lt;p&gt;Hello, &amp; world!&lt;/p&gt;&lt;/div&gt;",
+                helper.EscapeHtml("<div class=\"container\"><p>Hello, & world!</p></div>")
+            );
+            Assert.AreEqual("&lt;p&gt;Hello &amp; Goodbye&lt;/p&gt;", helper.EscapeHtml("<p>Hello & Goodbye</p>"));
+
+            Assert.AreEqual("&lt;Hello world!&gt;", helper.EscapeHtml("<Hello world!>"));
+            Assert.AreEqual("&lt;&lt;&lt;&lt;Hellooo&gt;", helper.EscapeHtml("<<<<Hellooo>"));
+            Assert.AreEqual("Mark&amp;", helper.EscapeHtml("Mark&"));
+        }
+        [TestMethod]
+        public void EscapeHtmlTestEx()
+        {
+           /* Helper helper = new();
+            Assert.IsNotNull(helper, "new Helper() should not be null");
+            var ex = Assert.ThrowsException<ArgumentNullException>(
+    () => helper.EscapeHtml(null!)
+    );
+            Assert.IsTrue(ex.Message.Contains("HTML"), "HTML should not be null");
+            var ex1 = Assert.ThrowsException<ArgumentNullException>(
+                () => helper.EscapeHtml("<<<<html>ndjngjdn</html>")
+                );
+            Assert.IsTrue(ex1.Message.Contains("correct"), "This should be a correct html file");
+            var ex2 = Assert.ThrowsException<ArgumentNullException>(
+                () => helper.EscapeHtml("p>dvd<////p>>>>")
+                );
+            Assert.IsTrue(ex2.Message.Contains("correct"), "This should be a correct html file");*/
+        }
+        [TestMethod]
+        public void ContainsAttributesTest()
+        {
+            Helper helper = new();
+            Assert.IsNotNull(helper, "new Helper() should not be null");
+            Assert.IsTrue(helper.ContainsAttributes("<div style=\"\"></div>"));
+            Assert.IsFalse(helper.ContainsAttributes("<div></div>"));
+        }
+
+        [TestMethod]
         public void EllipsisTest()
         {
             Helper helper = new();

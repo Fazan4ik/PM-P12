@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace App
@@ -56,6 +57,20 @@ namespace App
             }
             return input[..(len - 3)] + "...";
         }
+        public String EscapeHtml(String html)
+        {
+            String newHtml = html.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;");
+
+            return newHtml;
+        }
+
+        public bool ContainsAttributes(String html)
+        {
+            string pattern = @"<([a-z][a-z0-9]*)\s+[^>]*?(\s\w+\s*=\s*(""|').*?(""|')|[^>]+)>";
+            Regex regex = new Regex(pattern, RegexOptions.IgnoreCase);
+            return regex.IsMatch(html);
+        }
+
         public String Finalize(String input)
         {
             if (string.IsNullOrEmpty(input) || input.EndsWith("."))
@@ -64,6 +79,7 @@ namespace App
             }
             return input + ".";
         }
+
     }
 
 }
